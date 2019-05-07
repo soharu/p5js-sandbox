@@ -10,22 +10,27 @@
   </body>
   <script type="text/javascript">
     function setup() {
-      createCanvas(400, 400);
+      createCanvas(600, 400);
     }
 
     function draw() {
+      const center = {
+        x: width / 2,
+        y: height / 2
+      };
+
       background('#f4f4f4');
 
       stroke('#d4d4d4');
-      line(0, 200, 400, 200);
-      line(200, 0, 200, 400);
+      line(0, center.y, width, center.y);
+      line(center.x, 0, center.x, height);
 
       fill('#ed215D');
       noStroke();
       textSize(32);
       textStyle(BOLD);
       textAlign(CENTER, CENTER);
-      text('Hello, World', 200, 200);
+      text('Hello, World', center.x, center.y);
     }
   </script>
 </html>
