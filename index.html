@@ -30,7 +30,10 @@
       textSize(32);
       textStyle(BOLD);
       textAlign(CENTER, CENTER);
-      text('Hello, World', center.x, center.y);
+      translate(center.x, center.y);
+      angleMode(DEGREES);
+      rotate(parseInt((millis() / 10)) % 360);
+      text('Hello, World', 0, 0);
     }
   </script>
 </html>
