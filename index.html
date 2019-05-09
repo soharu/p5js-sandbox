@@ -5,35 +5,8 @@
     <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
     <title>p5js Sandbox</title>
     <script language="javascript" type="text/javascript" src="./scripts/p5.js"></script>
+    <script language="javascript" type="text/javascript" src="./scripts/sketch.js"></script>
   </head>
   <body>
   </body>
-  <script type="text/javascript">
-    function setup() {
-      createCanvas(600, 400);
-    }
-
-    function draw() {
-      const center = {
-        x: width / 2,
-        y: height / 2
-      };
-
-      background('#f4f4f4');
-
-      stroke('#d4d4d4');
-      line(0, center.y, width, center.y);
-      line(center.x, 0, center.x, height);
-
-      fill('#ed215D');
-      noStroke();
-      textSize(32);
-      textStyle(BOLD);
-      textAlign(CENTER, CENTER);
-      translate(center.x, center.y);
-      angleMode(DEGREES);
-      rotate(parseInt((millis() / 10)) % 360);
-      text('Hello, World', 0, 0);
-    }
-  </script>
 </html>
