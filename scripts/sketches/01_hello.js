@@ -40,7 +40,7 @@ const hello = (p) => {
   }
 
   p.setup = () => {
-    p.createCanvas(300, 200);
+    p.createCanvas(Config.sketch.width, Config.sketch.height);
     bind();
   };
 
@@ -50,7 +50,7 @@ const hello = (p) => {
       y: p.height / 2
     };
 
-    p.background('#f4f4f4');
+    p.background(Palette.lightGray);
 
     redDot.draw(p, p.millis());
 

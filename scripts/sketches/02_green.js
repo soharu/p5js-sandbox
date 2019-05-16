@@ -7,14 +7,15 @@ const green = (p) => {
   let sign = 1;
 
   p.setup = () => {
-    p.createCanvas(300, 200);
+    p.createCanvas(Config.sketch.width, Config.sketch.height);
   };
 
   p.draw = () => {
     green += sign * 1;
 
-    p.background('#f4f4f4');
-    p.stroke('#f4f4f4');
+    p.background(Palette.lightGray);
+
+    p.stroke(Palette.lightGray);
     p.strokeWeight(5);
 
     p.fill(p.color(0, green, 0));
