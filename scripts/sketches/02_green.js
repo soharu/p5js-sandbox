@@ -4,31 +4,45 @@ const green = (p) => {
     max: 200
   }
   let green = range.min;
-  let sign = 1;
+  let direction = 1;
+  let speed = 1;
 
   p.setup = () => {
     p.createCanvas(Config.sketch.width, Config.sketch.height);
   };
 
   p.draw = () => {
-    green += sign * 1;
+    green += direction * speed;
 
     p.background(Palette.lightGray);
 
     p.stroke(Palette.lightGray);
     p.strokeWeight(5);
 
-    p.fill(p.color(0, green, 0));
-    p.circle(100, 100, 150);
-    p.fill(p.color(0, 55 + green, 0));
-    p.circle(170, 100, 80);
-    p.fill(p.color(range.max, 255 - green, range.min));
-    p.circle(210, 100, 30);
+    const radiuses = [75, 40, 15];
+    const offsets = [0, 70, 110];
+    const colors = [
+      p.color(0, green, 0),
+      p.color(0, 55 + green, 0),
+      p.color(range.max, 255 - green, range.min)
+    ];
+    const fullWidth = radiuses[0] + offsets[2] + radiuses[2];
+
+    p.translate((p.width - fullWidth) / 2, p.height / 2 - radiuses[0]);
+    p.rectMode(p.CORNER);
+
+    for (let i = 0; i < radiuses.length; i++) {
+      p.fill(colors[i]);
+      p.circle(
+        radiuses[0] + offsets[i],
+        radiuses[0],
+        radiuses[i] * 2);
+    }
 
     if (green == range.max) {
-      sign = -1;
+      direction = -1;
     } else if (green == range.min) {
-      sign = 1;
+      direction = 1;
     }
   };
 };
