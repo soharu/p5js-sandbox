@@ -1,6 +1,6 @@
 const myTimer = (p) => {
-  let t = 0;
-  let timeout = 60;
+  let startedAt = p.millis();
+  let timeout = 10;
   let center = {
     x: Config.sketch.width / 2,
     y: Config.sketch.height / 2
@@ -12,7 +12,7 @@ const myTimer = (p) => {
   };
 
   p.draw = () => {
-    t = p.min(p.millis() / 1000, timeout);
+    const t = p.min((p.millis() - startedAt) / 1000, timeout);
     p.background(Palette.lightGray);
 
     p.push();
@@ -39,6 +39,12 @@ const myTimer = (p) => {
     p.textAlign(p.RIGHT);
     p.text(p.round(t) + ' seconds', Config.sketch.width - 10, Config.sketch.height - 10);
   };
+
+  p.mousePressed = () => {
+    if (((p.millis() - startedAt) / 1000) > timeout) {
+      startedAt = p.millis();
+    }
+  }
 };
 
 new p5(myTimer, '03_green');
