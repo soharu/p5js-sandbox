@@ -47,4 +47,4 @@ const myTimer = (p) => {
   }
 };
 
-new p5(myTimer, '03_green');
+new p5(myTimer, '03_timer');
