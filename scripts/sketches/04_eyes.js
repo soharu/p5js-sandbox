@@ -64,4 +64,4 @@ const eyes = (p) => {
   };
 };
 
-new p5(eyes, '04_eyesddd');
+new p5(eyes, '04_eyes');
