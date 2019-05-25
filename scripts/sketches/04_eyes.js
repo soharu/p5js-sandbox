@@ -61,6 +61,14 @@ const eyes = (p) => {
 
     leftEye.draw(p, leftCenter.x, leftCenter.y);
     rightEye.draw(p, rightCenter.x, rightCenter.y);
+
+    p.fill('red');
+    p.stroke('black');
+    if (p.mouseIsPressed) {
+      p.arc(face.x, face.y + 30, 50, 50, 0, p.PI, p.PIE);
+    } else {
+      p.line(face.x - 25, face.y + 30, face.x + 25, face.y + 30);
+    }
   };
 };
 
