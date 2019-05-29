@@ -1,122 +1,106 @@
 const puzzle = (p) => {
   let img;
-  const tileCount = 4;
-  const tiles = new Array(tileCount * tileCount);
-  const tileSize = 115;
+  const tileGrid = { r: 4, c: 4 };
+  const tiles = new Array(tileGrid.r * tileGrid.c);
+  let tileImageSize;
+  const padding = 20;
 
-  let space = tileCount * tileCount - 1;
+  const indexFromPosition = (pos) => {
+    return pos.r * tileGrid.c + pos.c;
+  }
+
+  const positionFromIndex = (index) => {
+    return {
+      r: Math.floor(index / tileGrid.c),
+      c: index % tileGrid.c
+    };
+  }
+
+  const calculatePosition = {
+    'ArrowDown': (pos) => { return { r: pos.r - 1, c: pos.c } },
+    'ArrowUp': (pos) => { return { r: pos.r + 1, c: pos.c } },
+    'ArrowRight': (pos) => { return { r: pos.r, c: pos.c - 1 } },
+    'ArrowLeft': (pos) => { return { r: pos.r, c: pos.c + 1 } }
+  };
 
   p.preload = () => {
-    // img = p.loadImage('./images/haru.png');
     img = p.loadImage('https://avatars0.githubusercontent.com/u/1327853?s=460&v=4');
   }
 
   p.setup = () => {
-    p.createCanvas(500, 500);
-
-    for (let r = 0; r < 4; ++r) {
-      for (let c = 0; c < 4; ++c) {
-        let pos = r * tileCount + c;
-        if (pos === tileCount * tileCount - 1) {
-          tiles[pos] = {
-            n: pos,
-            isBlank: true
-          };
-        } else {
-          tiles[pos] = {
-            n: pos,
-            isBlank: false,
-            x: c * tileSize,
-            y: r * tileSize,
-            w: tileSize,
-            h: tileSize
-          };
-        }
-      }
-    }
+    p.createCanvas(img.width + padding * 2, img.height + padding * 2);
+    setUpTiles();
   };
 
   p.draw = () => {
     p.background('#ddd');
 
-    p.translate(20, 20);
+    p.translate(padding, padding);
     p.fill('#bbb');
     p.noStroke();
     p.rect(0, 0, 460, 460);
 
-    tiles.forEach((tile) => {
+    tiles.forEach((tile, index) => {
       if (tile.isBlank) { return; }
-      // TODO: fix mapping
-      p.image(img, tile.x, tile.y, tile.w, tile.h, tile.x, tile.y, tile.w, tile.h);
+      const pos = positionFromIndex(index);
+      const x = pos.c * tileImageSize.w;
+      const y = pos.r * tileImageSize.h;
+      p.image(img, x, y, tileImageSize.w, tileImageSize.h, tile.imgX, tile.imgY, tileImageSize.w, tileImageSize.h);
       p.noFill();
       p.stroke('#ddd');
-      p.rect(tile.x, tile.y, tile.w, tile.h);
+      p.rect(x, y, tileImageSize.w, tileImageSize.h);
     });
   };
 
   p.keyPressed = () => {
-    switch (p.key) {
-      case 'ArrowUp':
-      case 'ArrowDown':
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        moveBlank(p.key);
-        return false;
-      default:
-        return true;
+    const f = calculatePosition[p.key];
+    if (f !== undefined) {
+      moveBlank(f);
+      return false;
     }
+    return true;
   };
 
-  const calculatePosition = {
-    'ArrowUp': (pos) => { return { r: pos.r - 1, c: pos.c } },
-    'ArrowDown': (pos) => { return { r: pos.r + 1, c: pos.c } },
-    'ArrowLeft': (pos) => { return { r: pos.r, c: pos.c - 1 } },
-    'ArrowRight': (pos) => { return { r: pos.r, c: pos.c + 1 } }
-  };
+  function setUpTiles() {
+    tileImageSize = {
+      w: Math.floor(img.width / tileGrid.c),
+      h: Math.floor(img.width / tileGrid.r)
+    };
 
-  function moveBlank(direction) {
+    for (let i = 0; i < tiles.length; ++i) {
+      const pos = positionFromIndex(i);
+      tiles[i] = {
+        n: i,
+        isBlank: i === tiles.length - 1,
+        imgX: pos.c * tileImageSize.w,
+        imgY: pos.r * tileImageSize.h
+      };
+    }
+  }
+
+  function moveBlank(calculateFunction) {
     const blankIndex = tiles.findIndex((e) => { return e.isBlank });
     if (blankIndex === undefined) {
       return;
     }
 
-    console.log(blankIndex);
-    let pos = {
-      r: Math.floor(blankIndex / tileCount),
-      c: blankIndex % tileCount
-    };
-
-    switch (direction) {
-      case 'ArrowUp':
-      case 'ArrowDown':
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        let newPos = calculatePosition[direction](pos);
-        console.log(newPos);
-        if (isValidPosition(newPos)) {
-          swapTiles(pos, newPos);
-        }
-        return;
-      default:
-        return;
+    const pos = positionFromIndex(blankIndex);
+    let newPos = calculateFunction(pos);
+    if (isValidPosition(newPos)) {
+      swapTiles(pos, newPos);
     }
   }
 
-  function findBlank() {
-    return tiles.find((e) => { return e.isBlank });
-  }
-
   function isValidPosition(pos) {
-    return (0 <= pos.r && pos.r < tileCount) && (0 <= pos.c && pos.c < tileCount);
+    return (0 <= pos.r && pos.r < tileGrid.r) && (0 <= pos.c && pos.c < tileGrid.c);
   }
 
   function swapTiles(a, b) {
-    const aIndex = a.r * tileCount + a.c;
-    const bIndex = b.r * tileCount + b.c;
+    const aIndex = indexFromPosition(a);
+    const bIndex = indexFromPosition(b);
     let t = tiles[aIndex];
     tiles[aIndex] = tiles[bIndex];
     tiles[bIndex] = t;
-    console.log(tiles);
   }
 };
 
