@@ -44,6 +44,10 @@ function mouseMoved() {
   circleWidth -= Math.min(circleWidth / 10);
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
 function distance(x1, y1, x2, y2) {
   return Math.sqrt(Math.abs(x1 - x2) ** 2 + Math.abs(y1 - y2) ** 2)
 }
