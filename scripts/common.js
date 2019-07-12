@@ -1,10 +1,9 @@
-const Config = {
-  sketch: {
-    width: 400,
-    height: 300,
-  }
-};
+'use strict';
 
 const Palette = {
   lightGray: '#f4f4f4'
 };
+
+function containerSize(p, containerId) {
+  return p.select(containerId).size();
+}

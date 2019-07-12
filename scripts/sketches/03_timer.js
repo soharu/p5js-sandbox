@@ -1,17 +1,19 @@
 const myTimer = (p) => {
   let startedAt = p.millis();
   let timeout = 10;
-  let center = {
-    x: Config.sketch.width / 2,
-    y: Config.sketch.height / 2
-  }
 
   p.setup = () => {
-    p.createCanvas(Config.sketch.width, Config.sketch.height);
+    const size = containerSize(p, '#03_timer');
+    p.createCanvas(size.width, size.height);
     p.frameRate(30);
   };
 
   p.draw = () => {
+    const center = {
+      x: p.width / 2,
+      y: p.height / 2
+    }
+
     const t = p.min((p.millis() - startedAt) / 1000, timeout);
     p.background(Palette.lightGray);
 
@@ -21,7 +23,7 @@ const myTimer = (p) => {
       p.strokeWeight(5);
       p.arc(
         center.x, center.y,
-        Config.sketch.height * 0.75, Config.sketch.height * 0.75,
+        p.height * 0.75, p.height * 0.75,
         p.PI + p.HALF_PI + (p.TWO_PI * t / timeout), p.PI + p.HALF_PI);
     } else {
       const blink = p.round((p.millis() / 500)) % 2;
@@ -37,7 +39,7 @@ const myTimer = (p) => {
     p.fill('black');
     p.noStroke();
     p.textAlign(p.RIGHT);
-    p.text(p.round(t) + ' seconds', Config.sketch.width - 10, Config.sketch.height - 10);
+    p.text(p.round(t) + ' seconds', p.width - 10, p.height - 10);
   };
 
   p.mousePressed = () => {

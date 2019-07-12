@@ -1,3 +1,5 @@
+'use strict';
+
 const mousePressedSubject = new rxjs.BehaviorSubject({ x: 300, y: 200 });
 
 class Dot {
@@ -40,7 +42,8 @@ const hello = (p) => {
   }
 
   p.setup = () => {
-    p.createCanvas(Config.sketch.width, Config.sketch.height);
+    const size = containerSize(p, '#01_hello');
+    p.createCanvas(size.width, size.height);
     bind();
   };
 

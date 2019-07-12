@@ -1,3 +1,5 @@
+'use strict';
+
 const green = (p) => {
   let range = {
     min: 50,
@@ -8,7 +10,8 @@ const green = (p) => {
   let speed = 1;
 
   p.setup = () => {
-    p.createCanvas(Config.sketch.width, Config.sketch.height);
+    const size = containerSize(p, '#02_green');
+    p.createCanvas(size.width, size.height);
   };
 
   p.draw = () => {
