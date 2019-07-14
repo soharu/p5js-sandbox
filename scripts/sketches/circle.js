@@ -22,7 +22,7 @@ function draw() {
   }
 }
 
-function mouseMoved() {
+function touchMoved() {
   if (circleWidth < 5) {
     return;
   }

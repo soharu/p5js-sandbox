@@ -74,7 +74,7 @@ const hello = (p) => {
     p.text('Hello, World', 0, 0);
   };
 
-  p.mousePressed = () => {
+  p.touchStarted = () => {
     mousePressedSubject.next({ x: p.mouseX, y: p.mouseY });
   };
 };

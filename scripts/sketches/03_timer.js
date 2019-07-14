@@ -42,7 +42,7 @@ const myTimer = (p) => {
     p.text(p.round(t) + ' seconds', p.width - 10, p.height - 10);
   };
 
-  p.mousePressed = () => {
+  p.touchStarted = () => {
     if (((p.millis() - startedAt) / 1000) > timeout) {
       startedAt = p.millis();
     }
