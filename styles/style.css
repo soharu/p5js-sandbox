@@ -1,5 +1,4 @@
 html {
-  min-width: 800px;
   height: 100%;
   overflow: hidden;
 }
@@ -16,9 +15,9 @@ html, body {
 }
 
 .card {
-  min-width: 400px;
+  min-width: 320px;
 }
 
 .card-img-top {
-  min-height: 300px;
+  min-height: 240px;
 }
