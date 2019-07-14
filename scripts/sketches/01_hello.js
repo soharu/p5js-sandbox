@@ -44,6 +44,7 @@ const hello = (p) => {
   p.setup = () => {
     const size = containerSize(p, '#01_hello');
     p.createCanvas(size.width, size.height);
+    p.frameRate(30);
     bind();
   };
 

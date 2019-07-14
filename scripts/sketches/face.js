@@ -148,6 +148,8 @@ let canvas;
 function setup() {
   canvas = new Canvas(windowWidth, windowHeight);
   canvas.create();
+
+  frameRate(30);
 }
 
 function draw() {

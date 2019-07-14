@@ -12,6 +12,7 @@ const green = (p) => {
   p.setup = () => {
     const size = containerSize(p, '#02_green');
     p.createCanvas(size.width, size.height);
+    p.frameRate(30);
   };
 
   p.draw = () => {

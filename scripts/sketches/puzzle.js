@@ -29,6 +29,7 @@ const puzzle = (p) => {
 
   p.setup = () => {
     p.createCanvas(img.width + padding * 2, img.height + padding * 2);
+    p.noLoop();
     setUpTiles();
   };
 
@@ -56,6 +57,7 @@ const puzzle = (p) => {
     const f = calculatePosition[p.key];
     if (f !== undefined) {
       moveBlank(f);
+      p.redraw();
       return false;
     }
     return true;

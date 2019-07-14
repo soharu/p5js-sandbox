@@ -3,6 +3,7 @@ let circleWidth = 200;// 250;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noLoop();
 }
 
 function draw() {
@@ -42,10 +43,13 @@ function touchMoved() {
   }
   circles.push(newCircle);
   circleWidth -= Math.min(circleWidth / 10);
+
+  redraw();
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  redraw();
 }
 
 function distance(x1, y1, x2, y2) {
