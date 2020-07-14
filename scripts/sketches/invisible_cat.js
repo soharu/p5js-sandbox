@@ -1,11 +1,13 @@
 "use strict";
 
+const columnMoveEventSubject = new rxjs.Subject();
+
 const imageSize = {
   width: 32,
   height: 32,
 };
 
-const pixelSize = 20;
+const pixelSize = 12;
 
 class ColumnImage {
   constructor(rows, cols, pixels) {
@@ -58,6 +60,7 @@ class ColumnImage {
     p.noStroke();
     p.fill("#fff");
     p.textAlign(p.CENTER);
+    p.textSize(pixelSize * 0.8);
     p.text(c, x + pixelSize / 2, -10);
     p.pop();
 
@@ -70,79 +73,61 @@ class ColumnImage {
     p.pop();
   }
 
-  moveSelectedColumnIndexToLeft() {
-    if (this.selectedColumnIndex === null) {
+  swapSelectedColumnIndex(selectedIndex, targetIndex) {
+    if (targetIndex < 0 || targetIndex >= imageSize.width) {
       return;
     }
 
-    const targetIndex = this.selectedColumnIndex - 1;
-    if (targetIndex < 0) {
-      return;
-    }
-
-    this.swapSelectedColumnIndexTo(targetIndex);
-  }
-
-  moveSelectedColumnIndexToRight() {
-    if (this.selectedColumnIndex === null) {
-      return;
-    }
-
-    const targetIndex = this.selectedColumnIndex + 1;
-    if (targetIndex >= imageSize.width) {
-      return;
-    }
-
-    this.swapSelectedColumnIndexTo(targetIndex);
-  }
-
-  swapSelectedColumnIndexTo(targetIndex) {
     // swap columns' order
-    const selectedColumn = this.orders[this.selectedColumnIndex];
+    const selectedColumn = this.orders[selectedIndex];
     const targetColumn = this.orders[targetIndex];
     this.orders[targetIndex] = selectedColumn;
-    this.orders[this.selectedColumnIndex] = targetColumn;
+    this.orders[selectedIndex] = targetColumn;
 
-    this.selectedColumnIndex = targetIndex;
+    if (this.selectedColumnIndex !== null) {
+      this.selectedColumnIndex = targetIndex;
+    }
   }
 }
 
 const sketchImpl = (p) => {
-  const imageData = encryptedImageList[20];
-  const columnImage = new ColumnImage(
-    imageSize.width,
-    imageSize.height,
-    imageData
-  );
+  var columnImage = null;
   const headerHeight = 20;
-  const padding = 25;
+  const padding = 5;
   const imageOffset = { x: padding, y: headerHeight + padding };
+
+  function bind() {
+    columnMoveEventSubject.subscribe((event) => {
+      if (columnImage === null) {
+        return;
+      }
+      switch (event.direction) {
+        case "left":
+          columnImage.swapSelectedColumnIndex(event.selectedIndex, event.selectedIndex - 1);
+          break;
+        case "right":
+          columnImage.swapSelectedColumnIndex(event.selectedIndex, event.selectedIndex + 1);
+          break;
+        default:
+          break;
+      }
+    });
+  }
 
   p.setup = () => {
     p.createCanvas(
       imageSize.width * pixelSize + padding * 2,
       headerHeight + imageSize.height * pixelSize + padding * 2
     );
-    p.noLoop();
+    bind();
   };
 
   p.draw = () => {
     p.background("#00f");
-    columnImage.draw(p, imageOffset);
-  };
-
-  p.drawImage = (offset) => {
-    p.push();
-    p.translate(offset.x, offset.y);
-    for (var x = 0; x < imageSize.width; ++x) {
-      for (var y = 0; y < imageSize.height; ++y) {
-        const color = imageData[y * imageSize.width + x];
-        p.noStroke();
-        p.fill(color);
-        p.rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-      }
+    if (columnImage === null) {
+      return;
     }
-    p.pop();
+    columnImage.draw(p, imageOffset);
   };
 
   p.touchEnded = () => {
@@ -153,35 +138,53 @@ const sketchImpl = (p) => {
 
     if (point.y < 0 || point.y > imageSize.height * pixelSize) {
       columnImage.selectedColumnIndex = null;
-      p.redraw();
       return;
     }
 
     if (point.x < 0 || point.x > imageSize.width * pixelSize) {
       columnImage.selectedColumnIndex = null;
-      p.redraw();
       return;
     }
 
     const index = Math.floor(point.x / pixelSize);
     columnImage.selectedColumnIndex = index;
-    p.redraw();
   };
 
   p.keyPressed = () => {
+    const selectedIndex = columnImage.selectedColumnIndex;
+
+    if (selectedIndex === null) {
+      return;
+    }
+
     switch (p.keyCode) {
       case p.LEFT_ARROW:
-        columnImage.moveSelectedColumnIndexToLeft();
-        p.redraw();
+        columnMoveEventSubject.next({
+          selectedIndex: selectedIndex,
+          direction: "left",
+        });
         break;
       case p.RIGHT_ARROW:
-        columnImage.moveSelectedColumnIndexToRight();
-        p.redraw();
+        columnMoveEventSubject.next({
+          selectedIndex: selectedIndex,
+          direction: "right",
+        });
         break;
       default:
         break;
     }
   };
+
+  p.setImage = (imageData) => {
+    columnImage = new ColumnImage(imageSize.width, imageSize.height, imageData);
+  };
 };
 
-new p5(sketchImpl, "sketch");
+var dataIndices = _.range(encryptedImageList.length);
+
+function createSketch(dataIndex) {
+  const sketch = new p5(sketchImpl, "sketch-" + dataIndex);
+  sketch.setImage(encryptedImageList[dataIndex]);
+}
+
+const sketches = _.map(dataIndices, createSketch);
